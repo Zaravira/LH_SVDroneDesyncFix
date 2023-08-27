@@ -10,7 +10,7 @@ Repair drones with auto targetting stay active and return to sit on your own shi
 This means getting used to their new behaviour, they pick targets based on proximity to your own ship. 
 This means:
 1) Early game, your attack drones are fixated with covering your behind, instead of going off on their own.
-2) You can 'aim' drones by positioning your ship near priority targets.
+2) You can 'aim' automatic drones by positioning your ship near priority targets.
 3) Repair drones looking for a target will prioritise your ship for repairs.
 
 # Limitations
