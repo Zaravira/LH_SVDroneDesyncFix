@@ -25,4 +25,4 @@ You'll have to install BepInEx first if you haven't already though.
 
 # Credit
 This mod was made using MartinC's defensive attack drone mod, which partially fixed the desync issue with attack drones by accident. 
-Although none of the code of the original mod remains, it gave me a good starting point by showing me how to change drone behaviour.
+Although almost none of the code of the original mod remains, it gave me a good starting point by showing me how to change drone behaviour.
