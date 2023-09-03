@@ -2,6 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using System.Linq;
+using System.Security.Authentication;
 
 namespace LH_SVDroneDesyncFix
 {
@@ -10,7 +11,7 @@ namespace LH_SVDroneDesyncFix
     {
         public const string pluginGuid = "LH_SVDroneDesyncFix";
         public const string pluginName = "LH_SVDroneDesyncFix";
-        public const string pluginVersion = "0.0.1";
+        public const string pluginVersion = "0.0.4";
 
         public void Awake()
         {
@@ -30,9 +31,10 @@ namespace LH_SVDroneDesyncFix
             if (array.Length == 0)
                 return;
             array = array.OrderBy(c => (__instance.owner.position - c.transform.position).sqrMagnitude).ToArray();
-            float num = 9999f;
             for (int i = 0; i < array.Length; i++)
             {
+                if (array[i] == null)
+                    continue;
                 Transform transform = array[i].transform;
                 SpaceShip spaceShip;
                 if (transform.CompareTag("Collider"))
@@ -44,14 +46,12 @@ namespace LH_SVDroneDesyncFix
                 {
                     spaceShip = transform.GetComponent<SpaceShip>();
                 }
+                if (spaceShip == null)
+                    continue;
                 if ((mode == 1 && spaceShip != __instance.ownerSS && __instance.ownerSS.ffSys.TargetIsEnemy(spaceShip.ffSys) && !spaceShip.IsCloaked) || (mode == 2 && __instance.ownerSS.ffSys == spaceShip.ffSys && spaceShip.currHP < spaceShip.baseHP))
                 {
-                    float num2 = Vector3.Distance(__instance.gameObject.transform.position, transform.position);
-                    if (num2 < num)
-                    {
-                        num = num2;
-                        x = transform;
-                    }
+                    x = transform;
+                    break;
                 }
             }
             if (x != null)
@@ -97,7 +97,7 @@ namespace LH_SVDroneDesyncFix
         {
             if (Vector3.Distance(__instance.owner.position, __instance.transform.position) > ___maxDistance && __instance != null && __instance.owner.gameObject.CompareTag("Player"))
             {
-                if (Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) < ___maxDistance)
+                if (___targetEntity != null && Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) < ___maxDistance)
                     return false;
                 else
                 {
