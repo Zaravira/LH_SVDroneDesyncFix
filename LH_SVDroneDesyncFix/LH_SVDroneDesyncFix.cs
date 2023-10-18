@@ -11,7 +11,7 @@ namespace LH_SVDroneDesyncFix
     {
         public const string pluginGuid = "LH_SVDroneDesyncFix";
         public const string pluginName = "LH_SVDroneDesyncFix";
-        public const string pluginVersion = "0.0.4";
+        public const string pluginVersion = "0.0.5";
 
         public void Awake()
         {
