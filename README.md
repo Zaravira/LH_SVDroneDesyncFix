@@ -6,7 +6,7 @@ This happens a lot more often than you realise and can be very problematic if yo
 
 This mod changes the drone behaviour so all mining drones, and attack drones with auto targetting, stay active until none of them can find a target.
 Repair drones with auto targetting stay active and return to sit on your own ship. 
-All drones now share an identical target zone to remain synchronised, but only once the original code would trigger a desync to prevent a general behaviour change.
+This mod takes over at the point where the original code fails.
 
 # Installing
 Simply grab the .dll from the release and stick it into steam\steamapps\common\Star Valor\BepInEx\plugins folder. 
