@@ -3,6 +3,7 @@ using HarmonyLib;
 using UnityEngine;
 using System.Linq;
 using System.Security.Authentication;
+using static UnityEngine.GraphicsBuffer;
 
 namespace LH_SVDroneDesyncFix
 {
@@ -24,7 +25,7 @@ namespace LH_SVDroneDesyncFix
         {
             if (!__instance.owner.gameObject.CompareTag("Player"))
                 return;
-            if (___targetEntity == null || Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) > ___maxDistance || mode == 2)
+            if (___targetEntity == null || Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) > ___maxDistance)
             {
                 if (__instance.ownerSS == null)
                     __instance.ownerSS = __instance.owner.GetComponent<SpaceShip>();
@@ -62,16 +63,12 @@ namespace LH_SVDroneDesyncFix
                     ___targetEntity = __instance.target.GetComponent<Entity>();
                     AccessTools.Method(typeof(Drone), "GetDesiredDistance").Invoke(__instance, null);
                 }
-                else if (mode == 2)
+                else
                 {
+                    Debug.Log("attack/repair shootin me fair");
                     __instance.target = __instance.ownerSS.transform;
                     ___targetEntity = __instance.ownerSS.GetComponent<Entity>();
                     AccessTools.Method(typeof(Drone), "GetDesiredDistance").Invoke(__instance, null);
-                }
-                else
-                {
-                    __instance.target = null;
-                    ___targetEntity = null;
                 }
             }
         }
@@ -93,6 +90,14 @@ namespace LH_SVDroneDesyncFix
                 __instance.target = array[0].transform;
                 ___targetEntity = __instance.target.GetComponent<Entity>();
                 AccessTools.Method(typeof(Drone), "GetDesiredDistance").Invoke(__instance, null);
+
+                if (___targetEntity == null)
+                {
+                    Debug.Log("miney whiney shootin me blimey");
+                    __instance.target = __instance.ownerSS.transform;
+                    ___targetEntity = __instance.ownerSS.GetComponent<Entity>();
+                    AccessTools.Method(typeof(Drone), "GetDesiredDistance").Invoke(__instance, null);
+                }
             }
         }
 
@@ -121,13 +126,48 @@ namespace LH_SVDroneDesyncFix
                     if (__instance.target != null)
                     {
                         ___targetEntity = __instance.target.GetComponent<Entity>();
-                        if (Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) < ___maxDistance)
+                        if (Vector3.Distance(__instance.owner.position, ___targetEntity.transform.position) > ___maxDistance)
+                            return true;
+                        else
                             return false;
                     }
                 }
-                return true;
             }
             return true;
         }
+
+        [HarmonyPatch(typeof(Weapon), "Fire")]
+        [HarmonyPrefix]
+
+        public static bool HoldFire(Drone ___drone, Transform target)
+        {
+            if (___drone && ___drone.owner.gameObject.CompareTag("Player") && ___drone.droneType == 2 && target == ___drone.owner)
+            {
+                Debug.Log("fire! fire at me mom! coz she mean!");
+                return false;
+            }
+            else
+                return true;
+        }
+
+        [HarmonyPatch(typeof(Drone), "SetActions")]
+        [HarmonyPostfix]
+        public static void Drone_SetActions_Reaquire(Drone __instance, ref Transform ___target, ref Entity ___targetEntity)
+        {
+            //Already has a target, don't reacquire
+            if (___targetEntity != null)
+                return;
+
+            //Only for player drones
+            if (!__instance.owner.gameObject.CompareTag("Player"))
+                return;
+
+            ___target = __instance.owner;
+            ___targetEntity = __instance.owner.GetComponent<Entity>();
+        }
+
     }
 }
+
+
+
